@@ -1,3 +1,3 @@
-# Information-Retrieve Project Using ElasticSearch, Django.
+# #Information-Retrieve Project Using ElasticSearch, Django.
 
 
