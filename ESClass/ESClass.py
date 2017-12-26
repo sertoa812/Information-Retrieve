@@ -1,8 +1,8 @@
 import json
 import requests
 import ReadFile
-from GetStopWords import get_stopwords
-class ESClass(object):
+from GetDataSets import get_stopwords
+class ESClass:
     def __init__(self, base_url):
         self.headers = {
             'json':{'Content-Type':'application/json'},
