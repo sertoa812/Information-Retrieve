@@ -9,6 +9,7 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+
 BOT_NAME = 'Neteasenews1'
 
 SPIDER_MODULES = ['Neteasenews1.spiders']
