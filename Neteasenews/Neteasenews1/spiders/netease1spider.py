@@ -7,7 +7,7 @@ import re
 import scrapy
 import urllib
 import json
-path = './result/'             #爬取结果存放路径
+path = r'D:\Experiment\IR_Scrapy\Neteasenews\result\\'              #爬取结果存放路径
 
 class NeteaseSpider(scrapy.Spider):
 	name = "netease1"                                               #爬虫的名字
