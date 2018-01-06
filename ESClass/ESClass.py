@@ -2,6 +2,7 @@ import json
 import requests
 import ReadFile
 from GetDataSets import get_stopwords
+import time
 # elasticsearch path cannot contains the Chinese Characters, which makes the access denied error
 class ESClass:
     def __init__(self, base_url):
@@ -21,7 +22,7 @@ class ESClass:
         self.base_url = base_url + self.index_name + '/' + self.type_name + '/'
         print(self.base_url)
         # set your own file_folder
-        self.file_folder = '/home/dc/桌面/Information-Retrieve/News'
+        self.file_folder = 'N:\\News'
         self.debug = True
 
     def response(self,message):
@@ -96,13 +97,16 @@ class ESClass:
                         "url": {
                             "type": "text"
                         },
-                        "commentnumber":{
+                        "heat":{
                             "type": "integer",
                             "index": "not_analyzed"
                         },
-                        "time":{
+                        "date":{
                             "type": "date",
-                            "index": "not_analyzed"
+                            "format": "yyyy-MM-dd HH:mm:ss"
+                        },
+                        "timestamp": {
+                            "type": "date"
                         },
                         "channel":{
                             "type": "text",
@@ -219,11 +223,17 @@ class ESClass:
             # 传过来的data为从源文件取出的json格式
             # 对content做数据冗余，先将json载入为map，再添加，然后再dumps为json格式
             for data in data_list:
-                data_map = json.loads(data,encoding='utf-8')
-                data_map['title1'] = data_map['title']
-                data_map['tag'] ={"input":data_map['title']}
-                data_map['text1'] = data_map['text']
-                bulk_data += json.dumps(action, ensure_ascii=False) + '\n' + json.dumps(data_map, ensure_ascii=False) + '\n'
+                try:
+                    data_map = json.loads(data,encoding='utf-8')
+                    data_map['title1'] = data_map['title']
+                    data_map['tag'] ={"input":data_map['title']}
+                    data_map['text1'] = data_map['text']
+                    data_map['time'] = data_map['time']
+                    data_map['timestamp'] = time.mktime(time.strptime(data_map['time'], '%Y-%m-%d %H:%M:%S'))
+                    #print(data_map['timestamp'])
+                    bulk_data += json.dumps(action, ensure_ascii=False) + '\n' + json.dumps(data_map, ensure_ascii=False) + '\n'
+                except:
+                    continue
             bulk_data += '\n'
             yield(bulk_data)
             bulk_data = ""
@@ -278,7 +288,12 @@ class ESClass:
     # generate query json and call matched search function
     # 1. query need to be json format
     # 2. query need to be encode 'utf-8' when requests.get
-    def input_search(self, query):
+    def input_search(self, query,  _size, _size_skip, _sort_type):
+        sort_json = {
+            "timestamp": "desc",
+            "heat": "desc",
+            "score": "desc"
+        }
         if '?' in query or '*' in query:
             query_json = {
                 "query":{
@@ -304,12 +319,17 @@ class ESClass:
             self.standard_search(query = json.dumps(query_json, ensure_ascii=False).encode('utf-8'))
         else:
             query_json = {
-                "query":{
-                    "match":{
-                        "text":query
+                "from": _size_skip, "size": _size,
+                "query": {
+                    "match": {
+                        "text": query
                     }
+                },
+                "sort": {
+                    _sort_type: {"order": sort_json['_sort_type']}
                 }
             }
+            print(query_json)
             self.standard_search(query = json.dumps(query_json, ensure_ascii=False).encode('utf-8'))
 
     def wildcard_search(self,  query = None):
@@ -318,6 +338,7 @@ class ESClass:
         self.response(r.text)
 
     def standard_search(self,  query = None):
+        # query is json,
         search_url = self.base_url +'_search?pretty=true'
         if query:
             r = requests.get(search_url, data = query, headers = self.headers['json'])
@@ -347,8 +368,14 @@ class ESClass:
         r = requests.get(analyzed_url, data = analyze_request_data.encode('utf-8'), headers = self.headers['json'])
         print(r.text)
 
+
+
     def restart(self):
         self.delete_index()
         self.create_index()
-        self.insert_bulk_data(1)
-es = ESClass("http://localhost:9200/")
+        self.insert_bulk_data(1000)
+es = ESClass('http://localhost:9200/')
+es.restart()
+#es.insert_bulk_data(1000)
+#es.input_search("体育",_size=10, _size_skip=0, _sort_type="timestamp")
+#es.show_type()

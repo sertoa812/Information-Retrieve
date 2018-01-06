@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="{% static 'bigautocomplete/css/jquery.bigautocomplete.css' %}" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style2.css' %}">
+
+<script src="{% static 'js/jquery-1.8.2.min.js' %}"></script>  <!--引入js文件：src表示引用外部文件的URL-->
+<script src="{% static 'js/common.js' %}"></script>     <!--引入js文件-->
+<script type="text/javascript" src="{% static 'bigautocomplete/js/jquery.bigautocomplete.js' %}"></script>
+</head>
+<script>
+function searchSubmit(){	
+	var text = document.getElementById("content").value;	
+	if (text == ""){
+		return false;
+	}else{
+		return true;
+	}
+}
+
+function rank(key){
+	document.getElementById("key").value = key;
+	$("#rank_form").submit();
+}
+
+$(function(){
+    $("#content").bigAutocomplete({
+        width:543,
+        url:'/suggest',
+        callback:function(data){
+            //alert(data.title);    
+        }
+    });
+})
+
+function showtext(tem){
+	document.getElementById(tem).style = "display: block; width: 750px;";
+
+}
+
+function hiddentext(tem){
+	document.getElementById(tem).style = "display: none;";
+}
+</script>
+<body>	   
+    <div class="box">
+    <!-- 顶部框架放置搜索框 和 网址链接-->
+    <div class="main_part">			
+		<span class="logo"><!-- 放置logo --><img src="{% static 'images/logoin2.jpg' %}"></span>
+        <div class="left_part"><!-- 放置搜索结果，包括结果部分，相似新闻，和翻页栏部分 -->
+            <div class="top_section">
+                <div class="title"><!-- 放置搜索按钮 -->
+					<form action = "#" method = "post" onsubmit = "return searchSubmit()" >
+						{% csrf_token %}
+						<input type="text" id = "content" name = "content" value = "" class="search1">
+						<input type="submit" value = "" class="button1" >
+                    </form>            
+                </div>
+                </br></br>
+							  <!--
+                              <div class="muti_web"><!-- 列出多个网址选项，类似百度 -->
+                              <!--<a onclick="st(this,'40030300','news')" href="http://news.sogou.com" uigs-id="nav_news" id="news" target=_blank>新闻</a>
+                              <a onclick="st(this,'40051200','weixin')" href="http://weixin.sogou.com/" uigs-id="nav_weixin" id="weixinch" target=_blank>微信</a>
+                              <a onclick="st(this,'40051200','zhihu')" href="http://zhihu.sogou.com/" uigs-id="nav_zhihu" id="zhihu" target=_blank>知乎</a>
+                              <a onclick="st(this,'40030500','pic')" href="http://pic.sogou.com" uigs-id="nav_pic" id="pic" target=_blank>图片</a>
+                              <a onclick="st(this,'40030500','video')" href="http://v.sogou.com/" uigs-id="nav_v" id="video" target=_blank>视频</a>
+                              <a href="http://english.sogou.com?fr=common_index_nav" uigs-id="nav_overseas" id="overseas" onclick="st(this,'','overseas')" target=_blank>英文</a>
+                              <a onclick="st(this,'web2ww','wenwen' ) " href="http://wenwen.sogou.com/?ch=websearch" uigs-id="nav_wenwen" id="index_more_wenwen" target=_blank>问问</a>
+                              <a href="http://scholar.sogou.com?fr=common_index_nav" uigs-id="nav_scholar" id="scholar" onclick="st(this,'','scholar')" target=_blank>学术</a>
+                              </div>-->
+            </div>
+			<div>
+			<form id = "rank_form" name = "rank_form" action = "/rank" method = "POST">
+			{% csrf_token %}
+			<button id = "_score" name = "_score" value = "_score" onclick = "rank('_score');">相关度 </button>
+			<button id = "timestamp" name = "timestamp" value = "timestamp" onclick = "rank('timestamp');">时间 </button>
+			<button id = "heat" name = "heat" value = "heat" onclick = "rank('heat');">热度 </button>
+			<input type = "hidden" id = "key" name = "key" value = "" />
+			<input type = "hidden" id = "original" name = "original" value = {{ search }} />
+			</form>
+			</div>
+            <div class="result"><!-- 左边部分中结果部分 -->
+                <div id="new1" class="results1">
+                    <div class="header1">
+                        <h4 class="head_type"><!-- 放置搜索结果的标题，可连接到结果页面 -->
+                            <a class="xx"  href="/index2?news_id={{ top1_rank.news_id }}" target = _blank>
+                            {{ top1_rank.title }} &nbsp; &nbsp;
+                            <em>{{ search }}</em>
+                            的最新相关信息
+                            </a>
+                        </h4>
+                    </div>
+                    
+                    <div class="similiar_news"><!-- 放置相似新闻 链接-->
+						{% for item in dic2 %}
+                        <span style="color:#666;float:right">{{ item.time }}</span>
+                        <a href={{ item.url }}  target=_blank>
+                        {{ item.title }}
+                        
+                        </a>
+                        <span style="color:#0080000">{{ item.channel }}</span><br>
+						{% endfor %}
+                    </div>
+
+                </div>
+				{% for item in dic1 %}
+				<div>
+                <div id="new2" class="results" >
+                    <div class="header" onmouseover = "showtext('{{ item.title }}')" onmouseout = "hiddentext('{{ item.title }}')">
+                        <h4 class="head_type"><!-- 放置搜索结果的标题，可连接到结果页面 -->
+                        <a class="xx"  href="/index2?news_id={{ item.news_id }}"  target=_blank>
+                        {{ item.title }} &nbsp; &nbsp;    
+                        <em>{{ search }}</em>
+                        的最新相关信息
+                        </a>
+						
+                        </h4>
+                    </div>
+                    <div class="c_abstract"><!-- 放置搜索结果的摘要 -->
+						<em>摘要内容</em>
+                        {{ item.summary }}
+                      
+                    </div>
+                </div>
+				<div id = "{{ item.title }}" style = "display: none;">
+				{{ item.content }}
+				</div>
+				</div>
+				{% endfor %}
+                              
+                        </div>
+                        <div id="pages" class="page"><!-- 左边部分中翻页部分 -->
+                              <strong></strong>
+							  {% for index in list3 %}
+							  <a href="/search?content={{ search }}&skip={{ index }}">{{ index }}</a>
+							  {% endfor %}
+                          
+                        </div>
+                  </br>
+                  </br>
+                        <!-- <div class="title"><!-- 放置底部搜索框 -->
+                                    <!--  <span> -->
+                        <!--<input type="text" class="search1"><input type="button" class="button1" >
+                                     <!-- </span> -->
+                        <!--</div>-->
+                  </div>
+                  <div class="center_part"></div><!-- 划分左右两块 -->
+<!--                   <div class="right_part">
+                        <div class="relevant_research" >
+                              <h3 style="text-align:center">相关搜索</h3>
+                        </div>
+                        <table class="table1" cellpadding="0">
+                              <tbody>
+                                    <tr>
+                                        <th>
+                                              <a href="">相关搜索1</a>
+                                        </th>  
+                                        <th>
+                                              <a href="">相关搜索2</a>
+                                        </th>  
+                                    </tr>
+                                    <tr>
+                                           <th>
+                                              <a href="">相关搜索3</a>
+                                        </th>  
+                                        <th>
+                                              <a href="">相关搜索4</a>
+                                        </th>  
+                                    </tr>
+                                    <tr>
+                                           <th>
+                                              <a href="">相关搜索5</a>
+                                        </th>  
+                                        <th>
+                                              <a href="">相关搜索6</a>
+                                        </th>  
+                                    </tr>
+                                    <tr>
+                                           <th>
+                                              <a href="">相关搜索7</a>
+                                        </th>  
+                                        <th>
+                                              <a href="">相关搜索8</a>
+                                        </th>  
+                                    </tr>
+                                    <tr>
+                                           <th>
+                                              <a href="">相关搜索9</a>
+                                        </th>  
+                                        <th>
+                                              <a href="">相关搜索10</a>
+                                        </th>  
+                                    </tr>
+                                    <tr>
+                                           <th>
+                                              <a href="">相关搜索11</a>
+                                        </th>  
+                                        <th>
+                                              <a href="">相关搜索12</a>
+                                        </th>  
+                                    </tr>
+                              </tbody>
+                        </table>
+                  </div> -->
+                  
+       	</div>	
+       </div>
+    </body>
+</html>

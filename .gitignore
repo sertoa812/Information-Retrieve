@@ -7,3 +7,4 @@ CloManager/
 *.gz
 *.txt
 *.zip
+*.sqlite3

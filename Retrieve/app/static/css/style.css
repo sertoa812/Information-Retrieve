@@ -1,0 +1,99 @@
+@charset "utf-8";
+/* CSS Document */
+body,h1,h2,h3,h4,h5,h6,hr,p,blockquote,dl,dt,dd,ul,ol,li,pre,form,fieldset,legend,button,input,textarea,th,td{margin:0;padding:0;}/*div的边框和元素距离为0*/
+body{color:#ededed/*白色*/;text-align:left;/*局左对齐*/background:#fff url(../images/head_bg/head_bg.png) no-repeat center center fixed;
+     -webkit-background-size: cover; -moz-background-size: cover; background-size: cover;/*背景图横向铺展*/}
+body,button,input,select,textarea{font:17px/1.5 tahoma,arial,\5b8b\4f53;font-weight:400;color=EDEDED/*设置字体样式*/}
+
+h1,h2,h3,h4,h5,h6{font-size:100%;}/*自动继承父体字体大小*/
+address,cite,dfn,em,var{font-style:normal;}
+ul,ol{list-style:none;}
+fieldset,img{border:0;}
+img {vertical-align:middle;}
+button,input,select,textarea{font-size:100%;}
+table{border-collapse:collapse;border-spacing:0;}
+a,a:visited {color:#333;text-decoration:none;outline:none;}
+a:hover,a:active,a:focus {text-decoration:underline;color:#62a315;background-color:transparent;}
+
+.search_box {
+	       position:fixed;
+           /*z-index:9999;*/
+           top:36%;
+           left:53.5%;
+           width:505px; /* 按需改变数值 */
+           height:39px; /* 按需改变数值 */
+           margin-top:-10px; /* height数值的一半 */
+           margin-left:-265px; /* width数值的一半 */
+           /*background:#70b515 filter: alpha(opacity=0) url(../images/th1.jpg)  no-repeat -297px -415px;*/
+           padding-left:3px;display:inline;/*多个div可以像span一样显示在一行*
+	      /*  float:left;
+	        width:529px;
+	        height:40px;
+	        background:#70b515 url(../images/bg.png)  no-repeat -297px -415px;
+            padding-left:3px;display:inline;/*多个div可以像span一样显示在一行*/}
+/*
+.search_box.center-in-center{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);}
+            */
+
+.search {width:529px;margin:0px;line-height:34px;height:34px;}
+.search a {text-decoration:none;cursor:pointer;}
+.search input {float:left;}
+.select {background:#fff url(../images/th1.jpg) no-repeat 76px -5px; border:0;border-right:solid 2px #fff;width:auto;height:34px;color:#666;line-height:34px;padding-left:8px;float:left;position:relative;z-index:99999;font-size:14px;margin-top:3px;}
+.select_hover {background:#fff url(../images/th1.jpg) no-repeat 76px 15px;border-right:solid 2px #70b515;}
+.part {left:-3px;top:34px;width:180px;padding:4px 1px 1px;background:#ffffff url(../images/select_topbg.png) no-repeat left top;border:solid 3px #70b515;border-top:0;line-height:30px;position:absolute;z-index: 9999;height:auto;zoom:1;-moz-border-radius:0px 0px 3px 3px;-webkit-border-radius:0px 0px 3px 3px;border-radius:0px 0px 3px 3px;}
+.part p {overflow:hidden;}
+.part p a {height:30px;color:#666;line-height:30px;padding-left:8px;width:82px;border-left:solid 1px #f3f3f3;border-top:solid 1px #f3f3f3;background:#fff;display:inline-block;float:left;margin-left:-1px;margin-top:-1px;white-space:nowrap;}
+.part a:hover {background:#f5f5f5;color:#62a315;}
+.enter {border:0;width:400px;float:left;height:34px;color:#999;line-height:34px;padding-left:5px;margin-top:3px;font-size:14px;outline:none;}
+.enters {border:0;width:348px;float:left;height:34px;color:#333;line-height:34px;padding-left:5px;margin-top:3px;font-size:14px;outline:none;}
+/*.sb {background:url(../images/th1.jpg) no-repeat 0 0px; position: fixed; top: 35%; border:0;width:84px;_width:81px;height:34px;cursor:pointer;}*/
+.sb {background:url(../images/th1.jpg) no-repeat 0 0px; border:0;width:34px;float:left;height:34px;line-height:34px;padding-left:5px;margin-top:3px;cursor:pointer;}
+.sb1 {background:url(../images/th1.jpg) no-repeat -31px 0;border:0;width:84px;_width:81px;height:40px;cursor:pointer;}
+.header a {text-decoration:none;cursor:pointer;}
+.header {  position:fixed;
+           /*z-index:9999;*/
+           bottom:0px;
+		   right:-40px;
+           width:529px; /* 按需改变数值 */
+           height:40px; /* 按需改变数值 */
+           float:left;
+           /*margin-left:-265px;*/
+           /*margin-top:70px;*/
+           /*margin-top:-80px;  height数值的一半 
+           
+           background:#70b515 url(../images/bg.png)  no-repeat -297px -415px;
+           */
+           color:#fff;
+
+     
+           /*多个div可以像span一样显示在一行*/}
+.logo {
+           position:fixed;
+           
+           top:38%;
+           left:50%;
+           width:400px; 
+           height:170px; 
+        
+           margin-left:-265px;
+           margin-top: -180px;
+           
+           
+           /*margin-top:-150px;*/
+
+}
+
+
+
+
+
+
+	

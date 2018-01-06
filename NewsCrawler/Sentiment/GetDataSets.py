@@ -1,3 +1,4 @@
+#-*-coding:utf-8 -*-
 import os
 def get_stop_words():
     stop_words_path = os.path.join(os.path.abspath('.'),"stopwords.txt")

@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+	<meta name="description" content="这是一个简单实用的jquery自动补全插件" />
+	<meta name="keywords" content="自动补全 jQuery自动补全插件 jquery插件 bigui bigautocomplete" />	
+	<title>jQuery bigautocomplete自动补全插件帮助文档</title>
+	<link href="../css/main.css" rel="stylesheet" type="text/css" />
+	<link href="../css/demo.css" rel="stylesheet" type="text/css" />
+	<link href="../css/syntaxHighlighter/shCoreDefault.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="../js/jquery-1.6.1.js"></script>
+	<script type="text/javascript" src="../js/syntaxHighlighter/shCore.js"></script>
+	<script type="text/javascript" src="../js/syntaxHighlighter/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../js/demo-common.js"></script>	
+	<script type="text/javascript" src="../js/main.js"></script>	
+	<script type="text/javascript" >
+		$(function(){
+			SyntaxHighlighter.all({"toolbar":false,"quick-code":false});
+		});
+	</script>
+	
+</head>
+
+<body>
+	<div class="content">
+		<div class="header" >
+			<a href="../index.html" hidefocus="true" ><img src="../images/JQuery_logo.png" />big系列UI插件</a>
+		</div>
+		<div class="main">
+			<div class="left-menu">
+				<div>
+					<div class="section" ><a href="index.html">自动补全插件</a></div>
+					<ul>
+						<li><div class="demo-text" >帮助文档</div></li>
+						<li><a href="demo.html">例子(demo)</a></li>
+						<li><a href="download.html">下载</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="right-main" >
+				<div>
+					<h3>一、如何使用：</h3>
+   					<div>1、下载源码。</div>
+					<div>2、 引入jquery.bigautocomplete.js和jquery.bigautocomplete.css文件到你的页面中。</div>
+					<div>3、具体的使用请看例子</div>
+				</div>
+				<div>
+					<h3>二、参数说明：</h3>
+					<div class="deom-tab">$("xxxxx").bigAutocomplete({data:[...],url:"",width:0,callback:{}})</div>
+					<div class="deom-tab">
+						<table>
+							<thead>
+								<tr ><td width="30%">参数</td><td>说明</td></tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>data(可选)：</td>
+									<td>
+										<div>data：格式{data:[{title:null,result:{}},{title:null,result:{}}]}</div>	
+										<div>url和data两个参数必须有一个，且只有一个生效，data优先。</div>	
+									</td>
+								</tr>
+								<tr>
+									<td>url(可选)：</td>
+									<td>
+										url为字符串，用来ajax后台获取数据，返回的数据格式为data参数一样。
+									</td>
+								</tr>
+								<tr>
+									<td>width(可选)：</td>
+									<td>
+										下拉框的宽度，默认使用输入框宽度。
+									</td>
+								</tr>
+								<tr>
+									<td>callback(可选)：</td>
+									<td>
+										选中行后按回车或单击时回调的函数，用于返回选中行的其他数据及做一些操作。
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div style="clear:both;" ></div>
+		</div>
+		<div class="foot" >
+			<div style="width:360px;margin:auto;" >
+				<table>
+					<tr>
+						<td rowspan="2" >问题反馈：</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>邮箱：liu400liu#163.com(将"#"换成"@")<br />博客留言：<a href="http://liu400liu.iteye.com" target="_blank" >iteye博客</a></td>
+					</tr>
+				</table>
+			</div>
+		</div>			
+	</div>
+</body>
+</html>

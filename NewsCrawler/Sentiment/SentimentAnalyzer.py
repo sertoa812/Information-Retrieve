@@ -1,5 +1,5 @@
+#-*-coding:utf-8 -*-
 import numpy as np
-
 from . import GetDataSets
 import thulac
 from gensim.models import Word2Vec

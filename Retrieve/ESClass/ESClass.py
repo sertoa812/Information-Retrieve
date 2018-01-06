@@ -2,6 +2,7 @@ import json
 import requests
 from ESClass import ReadFile
 from ESClass.GetDataSets import get_stopwords
+import time
 # elasticsearch path cannot contains the Chinese Characters, which makes the access denied error
 class ESClass:
     def __init__(self, base_url):
@@ -21,7 +22,7 @@ class ESClass:
         self.base_url = base_url + self.index_name + '/' + self.type_name + '/'
         print(self.base_url)
         # set your own file_folder
-        self.file_folder = 'N:\json'
+        self.file_folder = 'N:\\News'
         self.debug = True
 
     def response(self,message):
@@ -76,10 +77,12 @@ class ESClass:
                             "analyzer": self.analyzer['news2'],
                             "search_analyzer": self.analyzer['news2']
                         },
-                        "suggest":{
+                        "tag":{
                             "type": "completion",
-                            "analyzer": self.analyzer['news2'],
-                            "search_analyzer": self.analyzer['news2'],
+                            "preserve_separators" : 'false',
+                            "preserve_position_increments" : 'false',
+                            "analyzer": 'ik_max_word',
+                            "search_analyzer": 'ik_max_word'
                         },
                         "text": {
                             "type": "text",
@@ -94,13 +97,16 @@ class ESClass:
                         "url": {
                             "type": "text"
                         },
-                        "commentnumber":{
+                        "heat":{
                             "type": "integer",
                             "index": "not_analyzed"
                         },
-                        "time":{
+                        "date":{
                             "type": "date",
-                            "index": "not_analyzed"
+                            "format": "yyyy-MM-dd HH:mm:ss"
+                        },
+                        "timestamp": {
+                            "type": "date"
                         },
                         "channel":{
                             "type": "text",
@@ -117,7 +123,27 @@ class ESClass:
             }
         settings_json = json.dumps(settings)
         r = requests.put(index_url, data = settings_json, headers = self.headers['json'])
-        self.response(r.text)
+        return r.text
+
+    def suggest(self, query = None):
+        suggest_url = self.base_url+ '_search?pretty=true'
+        print(suggest_url)
+        suggest_json = {
+            "suggest":{
+                "news-suggest": {
+                    "text": query,
+                    "phrase":{
+                        "field": "title",
+                        "highlight": {
+                            "pre_tag": "<em>",
+                            "post_tag": "</em>"
+                        }
+                    }
+                }
+            }
+        }
+        r = requests.post(suggest_url, data=json.dumps(suggest_json, ensure_ascii=False).encode('utf-8'), headers = self.headers['json'])
+        return r.text
 
     #create new mapping using index/type/_mapping api to create mapping
     def create_mapping(self, mappings = {}):
@@ -128,13 +154,13 @@ class ESClass:
         else:
             return
         r = requests.put(mapping_url, data = json.dumps(mapping_request), headers = self.headers['json'])
-        self.response(r.text)
+        return r.text
 
     #不默认指明index，以免误删除
     def delete_index(self):
         index_url = self._base_url + self.index_name
         r = requests.delete(index_url, headers = self.headers['normal'])
-        self.response(r.text)
+        return r.text
 
     #batch delete
     def delete_data(self,  query={}):
@@ -152,18 +178,17 @@ class ESClass:
         else:
             query_request = json.dumps(query, ensure_ascii='False')
         r = requests.post(delete_url, data = query_request, headers = self.headers['json'])
-        self.response(r.text)
+        return r.text
 
     def insert_bulk_data(self, num):
         file_folder = self.file_folder
         bulk_url = self.base_url + '_bulk'
         # get bulk data -> ready to bulk insert
         for bulk_data in self.generate_bulk_insert_data(file_folder, num):
-            self.response(bulk_data)
             r = requests.post(bulk_url, data = bulk_data.encode('utf-8'), headers = self.headers['json'])
-            self.response(r.content)
+            return r.content
             # 若为调试，只插入一批次
-            assert not self.debug
+            #assert not self.debug
 
     def insert_crawled_data(self, filename):
         # crawled data is single file format
@@ -176,11 +201,12 @@ class ESClass:
         dict_data['text1'] = dict_data['text']
         dict_data['commentnumber'] = int(dict_data['commentnumber'])
         dict_data['comment'] = json.dumps(dict_data['comment'], ensure_ascii=False)
+        dict_data['tag_suggest'] = {"input":dict_data['title']}
 
         json_data = json.dumps(dict_data, ensure_ascii=False)
         insert_url = self.base_url + dict_data['news_id']
         r = requests.post(insert_url, data = json_data.encode('utf-8'), headers = self.headers['json'])
-        self.response(r.content)
+        return r.content
 
     def generate_bulk_insert_data(self, file_folder, num):
         read_file = ReadFile.ReadFile(file_folder)
@@ -196,11 +222,16 @@ class ESClass:
             # 传过来的data为从源文件取出的json格式
             # 对content做数据冗余，先将json载入为map，再添加，然后再dumps为json格式
             for data in data_list:
-                data_map = json.loads(data,encoding='utf-8')
-                data_map['title1'] = data_map['title']
-                data_map['suggest'] = { "input": data_map['title']}
-                data_map['text1'] = data_map['text']
-                bulk_data += json.dumps(action, ensure_ascii=False) + '\n' + json.dumps(data_map, ensure_ascii=False) + '\n'
+                try:
+                    data_map = json.loads(data,encoding='utf-8')
+                    data_map['title1'] = data_map['title']
+                    data_map['tag'] = {"input": data_map['title']}
+                    data_map['text1'] = data_map['text']
+                    data_map['time'] = data_map['time']
+                    data_map['timestamp'] = time.mktime(time.strptime(data_map['time'], '%Y-%m-%d %H:%M:%S'))
+                    bulk_data += json.dumps(action, ensure_ascii=False) + '\n' + json.dumps(data_map, ensure_ascii=False) + '\n'
+                except:
+                    continue
             bulk_data += '\n'
             yield(bulk_data)
             bulk_data = ""
@@ -208,25 +239,62 @@ class ESClass:
     def show_index(self):
         cat_url = self._base_url + '_cat/indices?v'
         r = requests.get(cat_url)
-        self.response(r.text)
+        return r.text
 
     def show_type(self):
         type_url = self._base_url + self.index_name + '/_search?pretty=true'
         r = requests.get(type_url)
-        self.response(r.text)
+        return r.text
 
-    def get_hot_data(self):
-        pass
-    def get_related_data(self):
-        pass
-    def get_suggest(self):
-        pass
+    def get_hot_data(self, query):
+        if not query:
+            query_string = {
+                "query": {
+                    "match_all": {
+
+                    },
+                    'sort': {
+                        'time': {
+                            'order': 'desc'
+                        }
+                    }
+                }
+            }
+        else:
+            query_string = {
+            'query':{
+                'query_string':{
+                    "fields":['text1','text','title','title1'],
+                        "query": query,
+                        "analyze_wildcard": "true",
+                        'allow_leading_wildcard': "true"
+                }
+            },
+            'sort':{
+                'time': {
+                    'order':'desc'
+                }
+            }
+        }
+        return requests.get(self.base_url + '_search?pretty=true', data = json.dumps(query_string, ensure_ascii=False).encode('utf-8'), headers=self.headers['json'])
+
+    def get_related_data_right(self, input):
+        return self.standard_search(input)
+
+    def get_related_data_left(self, input):
+        return self.standard_search(input)
     # generate query json and call matched search function
     # 1. query need to be json format
     # 2. query need to be encode 'utf-8' when requests.get
-    def input_search(self, query):
+    def input_search(self, query, _size, _size_skip, _sort_type):
+        sort_json = {
+            "timestamp": "desc",
+            "heat": "desc",
+            "score": "desc"
+        }
         if '?' in query or '*' in query:
             query_json = {
+                "from":_size_skip, "size":_size,
                 "query":{
                     "query_string":{
                         "fields":['text1','text','title','title1'],
@@ -234,29 +302,44 @@ class ESClass:
                         "analyze_wildcard": "true",
                         'allow_leading_wildcard': "true"
                     }
+                },
+                "sort":{
+                    _sort_type:{"order":"desc"}
                 }
             }
-            self.standard_search(query = json.dumps(query_json, ensure_ascii=False).encode('utf-8'))
+            return self.standard_search(query = json.dumps(query_json, ensure_ascii=False).encode('utf-8'))
         if '/and/' in query:
             query_split = query.split('/and/')
             query_split_wrapper = [{"match": {"desc": x}} for x in query_split]
             query_json = {
+                "from": _size_skip, "size": _size,
                 "query":{
                     "bool":{
                         "must": query_split_wrapper
                     }
+                },
+                "sort": {
+                    _sort_type: {"order": "desc"}
                 }
             }
-            self.standard_search(query = json.dumps(query_json, ensure_ascii=False).encode('utf-8'))
+            return self.standard_search(query = json.dumps(query_json, ensure_ascii=False).encode('utf-8'))
         else:
             query_json = {
+                "from": _size_skip, "size": _size,
                 "query":{
-                    "match":{
-                        "text":query
+                    "query_string":{
+                        "fields":['title'],
+                        "query": query,
+                        "analyze_wildcard": "true",
+                        'allow_leading_wildcard': "true"
                     }
+                },
+                "sort": {
+                    _sort_type: {"order": "desc"}
                 }
             }
-            self.standard_search(query = json.dumps(query_json, ensure_ascii=False).encode('utf-8'))
+            print(query_json)
+            return self.standard_search(query = json.dumps(query_json, ensure_ascii=False).encode('utf-8'))
 
     def wildcard_search(self,  query = None):
         search_url = self.base_url + '_search?pretty=true'
@@ -264,28 +347,14 @@ class ESClass:
         self.response(r.text)
 
     def standard_search(self,  query = None):
+        # query is json,
         search_url = self.base_url +'_search?pretty=true'
         if query:
             r = requests.get(search_url, data = query, headers = self.headers['json'])
         else:
             r = requests.get(search_url, headers = self.headers['normal'])
-        self.response(r.text)
+        return r.text
 
-    def suggest(self, query = None):
-        suggest_url = self.base_url + '_search?pretty'
-        suggest_json = {
-            "suggest": {
-                "news-suggest": {
-                    "text": query,
-                    "completion":{
-                        "field": "suggest",
-                        "size": 10
-                    }
-                }
-            }
-        }
-        r = requests.post(suggest_url, data=json.dumps(suggest_json, ensure_ascii=False).encode('utf-8'), headers = self.headers['json'])
-        self.response(r.text)
     #test function
     def search_test(self, query = {}):
         search_url = self.base_url + '_search'
@@ -295,7 +364,7 @@ class ESClass:
         else:
             headers = self.headers['json']
         r = requests.get(search_url, data = query, headers = headers)
-        self.response(r.text)
+        return r.text
     #test ik_analyzer token result by inputing a constant text
     def analyzed_test(self):
         analyzed_url = self._base_url + '_analyze'
@@ -308,20 +377,25 @@ class ESClass:
         r = requests.get(analyzed_url, data = analyze_request_data.encode('utf-8'), headers = self.headers['json'])
         print(r.text)
 
+    def get_by_news_id(self, news_id):
+        query_json = {
+            "query": {
+                "query_string":{
+                    "fields":['news_id'],
+                    "query": news_id,
+                    "analyze_wildcard": "true",
+                    'allow_leading_wildcard': "true"
+                }
+            }
+        }
+        query_news = self.map2json(query_json)
+        news_content = self.standard_search(query=query_news)
+        return news_content
+
+    def map2json(self, map):
+        return json.dumps(map, ensure_ascii=False).encode('utf-8')
+
     def restart(self):
         self.delete_index()
         self.create_index()
-        self.insert_bulk_data(500)
-
-es = ESClass("http://localhost:9200/")
-#es.create_index()
-#es.restart()
-#es.suggest("习近平")
-#es.input_search('手机')
-#es.input_search(query='*奥会')
-#es.analyzed_test()
-#es.insert_data('news_test','news','N:\json',200)
-#es.input_search(query = "5800X*Music")
-#es.insert_data(num=1)
-es.show_index()
-es.show_type()
+        self.insert_bulk_data(1)

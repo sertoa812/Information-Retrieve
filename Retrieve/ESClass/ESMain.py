@@ -1,6 +1,9 @@
-from ESClass import ESClass
-import pika
 import os
+
+import pika
+
+from ESClass import ESClass
+
 News_path = os.path.join(os.path.abspath('..'),'News')
 connection = pika.BlockingConnection(pika.ConnectionParameters(
             host='127.0.0.1', port=5672))  # 定义连接池

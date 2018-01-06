@@ -21,29 +21,6 @@ class SentimentAnalyzerBase:
         seq_no_stop_words = [value for value in seq if value not in stop_words]
         return seq_no_stop_words
 
-#https://www.jianshu.com/p/4cfcf1610a73
-class SentimentAnalyzerEasy(SentimentAnalyzerBase):
-
-    def __init__(self):
-        super().__init__()
-
-    def get_lists(self):
-        # (1) 情感词
-        # 词：分数形式
-        senDict = GetDataSets.get_bosonNLP_words()
-        # (2) 否定词
-        # 词列表
-        notDict = GetDataSets.get_not_words()
-        # (3) 程度副词
-        # 词：分数形式
-        degreeDict = GetDataSets.get_adv_words()
-
-        return senDict, notDict, degreeDict
-
-    def cal_sentiment(self, sequence):
-        sen_list, not_list, degree_list = self.get_lists()
-        seq_list = self.token(sequence)
-
 class SentimentAnalyzerSVM(SentimentAnalyzerBase):
     def __init__(self):
         super().__init__()

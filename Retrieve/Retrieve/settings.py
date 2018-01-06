@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -68,6 +69,12 @@ TEMPLATES = [
     },
 ]
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
 WSGI_APPLICATION = 'Retrieve.wsgi.application'
 
 
@@ -85,8 +92,8 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
+#LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-cn'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True

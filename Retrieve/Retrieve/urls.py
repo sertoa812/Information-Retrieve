@@ -14,7 +14,17 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from app import views
+admin.autodiscover()
 
 urlpatterns = [
-    url(r'^app/',include('app.urls',namespace="app")),
+    url(r'^$', views.index, name='index'),
+    url(r'^index2$', views.index2, name="index2"),
+    url(r'^home$', views.home, name='home'),
+    url(r'^complete$', views.complete, name = "complete"),
+    url(r'^search$', views.search, name="search"),
+    url(r'^control$', views.control, name = "search"),
+    url(r'^rank$', views.rank, name = "rank"),
+    url(r'^suggest$', views.suggest, name = "suggest"),
+    url(r'^admin/', include(admin.site.urls)),
 ]
