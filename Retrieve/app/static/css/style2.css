@@ -1,0 +1,137 @@
+﻿@charset "utf-8";
+/* CSS Document */
+
+
+*{
+			 	  margin: 0;
+			 	  padding: 0;
+			 }
+
+
+
+
+.box{
+		height:100%;
+		/*	 border: 1px solid #D9E0EE;*/
+		border-top:3px  #FF8400;
+		margin:30px auto;
+        border-bottom:3px  #FF8400;
+        overflow: hidden;
+}
+              
+em{color:red;}
+
+     
+         
+              
+              .muti_web{
+              	/*display: block;*/
+              }
+.main_part{
+        display: block;
+}
+              .left_part{
+              	/*display: inline-block;*/
+              	width:800px;
+			  	height:100%;
+              	float:left;
+              	padding-left: 0px;
+              	display:block;
+              }
+              
+              .results1{
+              	width:700px;
+              	height:226px;
+              	padding-top:15px;
+                border-bottom: 1px solid #EEEEEE;
+              }
+
+              .results{
+				width: 750px;
+              	height:120px;
+              	padding-top: 10px;
+              	border-bottom: 1px solid #EEEEEE;
+              }
+			  
+			  .results2{
+				  width: 750px;
+				  height: 80px;
+				  padding-top: 10px;
+				  border-bottom: 1px solid #EEEEEE;
+			  }
+              .page{
+              	float: left;
+              	padding-top: 15px;
+              	padding-bottom: 15px;
+              }
+              .page a{
+              	padding-left: 10px;
+              	padding-right: 10px;
+              }
+              .center_part{
+                float:left;  
+			    width:20px;  
+			    border-left: 1px dashed black;  
+			    padding-bottom:1600px;  /*关键*/  
+			    margin-bottom:-1600px;  /*关键*/
+			    padding-right: 30px;
+			    border-color: #999999;
+			    
+              }
+
+              .right_part{
+              	width:600px;
+			  	height:100%;
+			  	padding-top: 80px;
+			  	float:right;
+
+              /*display: inline-block;*/
+              }
+              .table1{
+              	width: 450px;
+                height:50px;
+              margin:0px auto;
+
+              }
+            .table1 tr th { 
+                width:100;
+                height:50px;
+            	padding:50px 30px;
+            	
+            	text-align: center;
+            }
+			  .title{
+			  	  height: 35px;
+			  	  line-height:35px;
+			  	  border-bottom: 1px solid  #D9E0EE;
+			  	  float: left;
+			  	  margin: 0 auto;
+			  	  text-decoration: none;
+
+			  }
+.search1{
+			width:500px;
+			height : 25px;
+			float:left;			
+}
+
+.results{
+            padding-top: 5px;
+            padding-left: 5px;
+            padding-right: 5px;
+}
+
+.button1{
+			width:28px;
+			height:28px;
+			background: url(../images/th2.jpg) no-repeat;
+            margin-top:0px;
+}  
+ 
+.logo{
+        text-align: left;
+		float: left;
+        padding-top: 6px;
+        border-bottom:1px solid #EEEEEE; 
+}			  
+

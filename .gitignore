@@ -3,3 +3,8 @@
 *.xml
 *.pyc
 RetrieveProject/.idea/.name
+CloManager/
+*.gz
+*.txt
+*.zip
+*.sqlite3

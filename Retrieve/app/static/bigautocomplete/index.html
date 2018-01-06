@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+	<link rel="stylesheet" href="css/jquery.bigautocomplete.css" type="text/css" />
+    <title>bigautocomplete-jquery plugin</title>
+	<script type="text/javascript" src="js/jquery-1.6.1.js"></script>
+	<script type="text/javascript" src="js/jquery.bigautocomplete.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			
+			$("#tt").bigAutocomplete({width:340,data:[{title:"中国",result:{ff:"qq"}},{title:"日本"},{title:"美国"},{title:"韩国"}]});
+			
+			$("#dd").bigAutocomplete({data:[{title:"猪肉",result:{ff:"qq"}},{title:"牛肉"},{title:"小肌肉"},{title:"小日本肉"}],callback:function(data){
+				alert(data);
+				
+			}});
+			
+			$(".ba").bigAutocomplete({data:[{title:"中国",result:{ff:"qq"}},{title:"日本"},{title:"美国"},{title:"韩国"}]});
+		})
+	</script>
+
+</head>
+<body>
+	自定义下拉框宽度，列表为：中国、美国、日本、韩国等
+	<br/>
+	<input type="text" id="tt" style="width:300px;height:20px;font-size:15px;" />
+		
+	<br/>
+	<br/>	
+	<br/>
+	<br/>	
+	<br/>
+	<br/>	
+	<br/>
+	<br/>
+	<br/>
+	没有自定义宽度时与文本输入框等宽猪肉、牛肉、小肌肉、小日本肉
+	 	<br/>
+	<input type="text" id="dd" style="width:150px;height:15px;font-size:15px;" />
+	
+	<br />
+	<br />	
+	中国、美国、日本、韩国，批量给两个文本框绑定相同的自动补全<br/>
+	<input type="text" class="ba" style="width:300px;height:20px;font-size:15px;" />	<input type="text" class="ba" style="width:300px;height:20px;font-size:15px;" />
+</body>
+</html>

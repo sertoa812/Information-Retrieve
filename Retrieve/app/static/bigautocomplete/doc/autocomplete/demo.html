@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+	<meta name="description" content="这是一个简单实用的jquery自动补全插件" />
+	<meta name="keywords" content="自动补全 jQuery自动补全插件 jquery插件 bigui bigautocomplete" />	
+	<title>jQuery bigautocomplete自动补全插件demo</title>
+	<link href="../css/main.css" rel="stylesheet" type="text/css" />
+	<link href="../css/demo.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" href="../css/jquery.bigautocomplete.css" type="text/css" />
+	<script type="text/javascript" src="../js/jquery-1.6.1.js"></script>
+	<script type="text/javascript" src="../js/jquery.bigautocomplete.js"></script>
+	<script type="text/javascript" src="../js/demo-common.js"></script>
+	<script type="text/javascript" src="../js/demo-bigautocomplete.js"></script>
+	
+	<link href="../css/syntaxHighlighter/shCoreDefault.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="../js/syntaxHighlighter/shCore.js"></script>
+	<script type="text/javascript" src="../js/syntaxHighlighter/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../js/main.js"></script>		
+</head>
+<body>
+	<div class="content">
+		<div class="header" >
+			<a href="../index.html" hidefocus="true" ><img src="../images/JQuery_logo.png" />big系列UI插件</a>
+		</div>
+		<div class="main">
+			<div class="left-menu"  >
+				<div>
+					<div class="section" ><a href="index.html">自动补全插件</a></div>
+					<ul>
+						<li><a href="doc.html">帮助文档</a></li>
+						<li>例子(demo)
+							<ul>
+								<li class="li-cursor demo-text" demo="demo1" >自动补全传入数组数据</li>
+								<li class="li-cursor" demo="demo2" >设置下拉补全框的宽度</li>
+								<li class="li-cursor" demo="demo3" >回调函数返回数据</li>
+								<li class="li-cursor" demo="demo4" >ajax获取数据</li>
+								<li class="li-cursor" demo="demo5" >批量多个文本框自动补全</li>
+							</ul>
+						</li>
+						<li><a href="download.html">下载</a></li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="right-main" >
+				<div class="demo" id="demo1" >
+					<div>1、自动补全传入数组数据：</div>
+					<div class="regist" >
+						下拉补全框的数据为：["book","blue","fool","bus"] <br />
+						<input type="text" id="tt" style="width:300px;" />
+					</div>
+					<br />
+					<div>js代码：<span class="J-copy" title="复制代码到剪切板" ></span></div>
+					<div class="code-section"  >
+<pre class="brush: js">
+	&lt;input type="text" id="tt" style="width:300px;"/&gt;
+	$(function(){
+		$("#tt").bigAutocomplete({data:[{title:"book"},
+		                                {title:"blue"},
+		                                {title:"fool"},
+		                                {title:"bus"}]});
+	})
+</pre>
+					</div>
+					<div>
+						&nbsp;&nbsp;在文本输入框中输入字符，如果与["book","blue","fool","bus"] 里的数据模糊匹配，则自动补全下拉框显示匹配的数据。这里一次性把列表里所有的
+						数据通过data参数传入。			
+					</div>
+				</div>
+				
+				<div class="demo" id="demo2" style="display: none" >
+					<div>2、设置下拉补全框的宽度：</div>
+					<div class="regist" >
+						下拉补全框的数据为：["book","blue","fool","bus"] <br />
+						<input type="text" id="ff" style="width:150px;" />
+					</div>
+					<br />
+					<div>js代码：<span class="J-copy" title="复制代码到剪切板" ></span></div>
+					<div class="code-section"  >
+<pre class="brush: js">
+	&lt;input type="text" id="ff" style="width:150px;"/&gt;
+	$(function(){
+		$("#ff").bigAutocomplete({width:"200px",
+								   data:[{title:"book"},
+		                                 {title:"blue"},
+		                                 {title:"fool"},
+		                                 {title:"bus"}]});
+	})
+</pre>
+					</div>
+					<div>
+						<div>&nbsp;&nbsp;1、在文本输入框中输入字符，如果与["book","blue","fool","bus"] 里的数据模糊匹配，则自动补全下拉框显示匹配的数据。这里一次性把列表里所有的
+						数据通过data参数传入。</div>
+						<div>&nbsp;&nbsp;2、下拉补全框的宽度设置为200px,如果不设置宽度，将与文本框等宽。</div>			
+					</div>
+				</div>
+				
+				<div class="demo" id="demo3" style="display: none" >
+					<div>3、回调函数返回数据：</div>
+					<div class="regist" >
+						下拉补全框的数据为：["book","blue","fool","bus"] <br />
+						<input type="text" id="qq" style="width:320px;" />
+					</div>
+					<br />
+					<div>js代码：<span class="J-copy" title="复制代码到剪切板" ></span></div>
+					<div class="code-section"  >
+<pre class="brush: js">
+	&lt;input type="text" id="qq" style="width:320px;"/&gt;
+	$(function(){
+	    $("#qq").bigAutocomplete({data:[{title:"book",result:"booooook"},
+	                                    {title:"blue",result:"bluuuuue"},
+	                                    {title:"fool"},
+	                                    {title:"bus",result:[1,2,3]}],
+	                             callback:function(data){
+	         						alert(data);
+	         					 }});	
+	})
+</pre>
+					</div>
+					<div>
+						<div>&nbsp;&nbsp;1、在文本输入框中输入字符，如果与["book","blue","fool","bus"] 里的数据模糊匹配，则自动补全下拉框显示匹配的数据。这里一次性把列表里所有的
+						数据通过data参数传入。</div>
+						<div>&nbsp;&nbsp;2、回调函数返回选中行的数据（应用场景，选中行时文本框中是字符串，有时候需要对应记录的id或其他信息），比如选中book行，返回的是对象{title:"book",result:"booooook"}。</div>			
+					</div>
+				</div>
+				
+				<div class="demo" id="demo4" style="display: none" >
+					<div>4、回调函数返回数据：</div>
+					<div class="regist" >
+						下拉补全框的数据为：["book","blue","fool","bus"] <br />
+						<input type="text" id="nn" style="width:200px;" />
+					</div>
+					<br />
+					<div>js代码：<span class="J-copy" title="复制代码到剪切板" ></span></div>
+					<div class="code-section"  >
+<pre class="brush: js">
+	&lt;input type="text" id="nn" style="width:200px;"/&gt;
+	$(function(){
+		var url_ = "ajax.html";
+	    $("#qq").bigAutocomplete({url:url_});	
+	})
+</pre>
+					</div>
+					<div>
+						<div>1、在文本输入框中输入字符，ajax从后台获取匹配数据，自动补全下拉框显示匹配的数据。</div>
+						<div>2、url可以带参数，比如http://localhost?id=1，则实际提交到后台的url为比如http://localhost?id=1&keyword=xx，
+							keyword值为文本输入框键入的值，后台根据keyword过滤返回数据，数据的格式为json：{"data":[{"title":"ff","result":"gg"},{"title":"mm","result":"hh"}]},result属性可选。
+						</div>
+					</div>
+				</div>
+				
+				<div class="demo" id="demo5" style="display: none" >
+					<div>5、批量多个文本框自动补全：</div>
+					<div class="regist" >
+						下拉补全框的数据为：["book","blue","fool","bus"] <br />
+						<input type="text" class="batch-text" style="width:200px;" />
+						<input type="text" class="batch-text" style="width:200px;" />
+					</div>
+					<br />
+					<div>js代码：<span class="J-copy" title="复制代码到剪切板" ></span></div>
+					<div class="code-section"  >
+<pre class="brush: js">
+	&lt;input type="text" class="batch-text" style="width:200px;"/&gt; 
+	&lt;input type="text" class="batch-text" style="width:200px;"/&gt;
+	$(function(){
+		$("#tt").bigAutocomplete({data:[{title:"book"},
+		                                {title:"blue"},
+		                                {title:"fool"},
+		                                {title:"bus"}]});
+	})
+</pre>
+					</div>
+					<div>
+						<div>1、批量给所有class为batch-text的文本框绑定相同的自动补全功能。</div>
+					</div>
+				</div>				
+			</div>
+			<div style="clear:both;" ></div>
+		</div>
+		<div class="foot" >
+			<div style="width:360px;margin:auto;" >
+				<table>
+					<tr>
+						<td rowspan="2" >问题反馈：</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>邮箱：liu400liu#163.com(将"#"换成"@")<br />博客留言：<a href="http://liu400liu.iteye.com" target="_blank" >iteye博客</a></td>
+					</tr>
+				</table>
+			</div>
+		</div>		
+	</div>
+</body>
+</html>

@@ -1,0 +1,344 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  <!--告知浏览器文档使用哪种 HTML 或 XHTML 规范-->
+<html xmlns="http://www.w3.org/1999/xhtml">  <!--定义xml的命名空间-->
+{% load staticfiles %}
+<head> <!--头文件头-->
+<meta name=”viewport” content=”width=device-width, initial-scale=1″ />
+<link rel="stylesheet" href="{% static 'bigautocomplete/css/jquery.bigautocomplete.css' %}" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><!--用于规定页面的描述、关键词、文档的作者、最后修改时间以及其他元数据。元数据可用于浏览器（如何显示内容或重新加载页面），搜索引擎（关键词），或其他 web 服务。-->
+<title>doogle搜索引擎</title>   <!--此网页的名字标记-->
+<script src="{% static 'js/jquery-1.8.2.min.js' %}"></script>  <!--引入js文件：src表示引用外部文件的URL-->
+<script src="{% static 'js/common.js' %}"></script>     <!--引入js文件-->
+<script type="text/javascript" src="{% static 'bigautocomplete/js/jquery.bigautocomplete.js' %}"></script>
+<script language=javascript>
+function update(temp){
+	var path = "../static/images/head_bg/";
+	var imgArr = [path + "AlesundNorway.jpg",
+				 path + "CrescentCityConnection.jpg",
+				 path + "Forest.jpg",
+				 path + "Freudenberg.jpg",
+				 path + "KingPhoto.jpg",
+				 path + "LeuchtturmWarnemuende.jpg",
+				 path + "PlutoNorthPole.jpg",
+				 path + "ScreechOwl.jpg",
+				 path + "SolsticeSquirrel.jpg",
+				 path + "Wintersolstice.jpg"
+			];
+	if(temp == 'img'){
+		var index = parseInt(Math.random() * (imgArr.length - 1));
+		var currentImage = imgArr[index];
+		document.body.style.backgroundImage="url("+currentImage+")";//改变背景图片
+	}
+}
+</script>
+<script>
+function snow(){
+	var flag = document.getElementById("snowid").name;          //value
+	
+	if (flag == "start"){
+		document.getElementById("snowid").name = "stop";
+		start();
+		return;
+	}
+	if (flag == "stop"){
+		document.getElementById("snowid").name = "start";
+		stop();
+		return;
+	}
+}
+
+function start(){
+    var array=new Array();
+    
+	var hei = document.body.clientHeight;
+	document.getElementById("mycanvas").height = hei;
+	var canvas=document.getElementById("mycanvas");
+    var context=canvas.getContext("2d");
+	context.fillStyle='#ffffff';
+	
+    for(var i=0;i<500;i++){
+		var Showsnow=new showsnow(hei);
+		array.push(Showsnow);
+    }    
+    time=setInterval(function (){
+		context.clearRect(0,0,canvas.width,canvas.height);
+		for(var i=0;i<array.length;i++){
+			array[i].move();
+			array[i].draw(context);
+		}
+    },50);
+}
+function showsnow(temp){
+	
+    var y=parseInt(Math.random()*temp / 10)*10;
+    var x=parseInt(Math.random()*165)*10;
+    this.draw=function(context){
+		context.font="35px Calibri";
+		context.fillText(".",x,y);
+    }
+	this.move=function(){
+		y+=1;
+		if(y>temp){
+			y=0;
+		}
+    }
+}
+function stop(){
+	var int = window.clearInterval(time);
+	var canvas = document.getElementById("mycanvas");
+	var context = canvas.getContext("2d");
+	context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+</script>
+
+<script>
+function music(){
+	var flag_m = document.getElementById("musicid").name;          //value
+	var myAuto = document.getElementById('myaudio');
+	if (flag_m == "sound"){
+		autoPlay();
+		document.getElementById("musicid").name = "close";
+		return;
+	}
+	if (flag_m == "close"){
+		closePlay();
+		document.getElementById("musicid").name = "sound";
+		return;
+	}
+}
+function autoPlay() {
+    var myAuto = document.getElementById('myaudio');
+	myAuto.src = "../static/music/Bells.wav";
+    myAuto.play();
+}
+function closePlay() {
+    var myAuto = document.getElementById('myaudio');
+    myAuto.pause();
+	myAuto.load();
+}
+</script>
+
+<script>
+function dofresh(){
+	
+	$(document).ready(function(){	
+		//$("#fresh").click(function(){
+			$.ajax({
+				type:"GET",
+				url:"/home",
+				data:{"fresh":'fresh'},
+				//datatype:"json",
+				success: function(ret){
+					$('#show').html("");
+					for (var key in ret){
+						$('#show').append('<a href = ' + ret[key] + '>' + key +  '<br>');
+					}
+				}
+			})
+		//});
+    });
+	
+	/*
+	$(document).ready(function(){
+      //$("#fresh").click(function(){
+        $.get("/home",{'fresh':'fresh'}, function(ret){
+			alert(ret);
+            $('#result').html(ret);
+        })
+      //});
+	})
+	*/
+}
+</script>
+
+<script>
+function checkField(value){
+	
+	$('#result').html(value);
+	if (value == ""){
+		document.getElementById("sel").style.display = "none";
+		return;
+	}
+	document.getElementById("sel").style.display = "block";
+	 
+	$(document).ready(function(){
+        $.get("/complete",{'search': value}, function(ret){
+			var len = ret.length;
+			document.getElementById("sel").size = len;
+			for (var i = 0; i < len; i++){
+				$("#sel").append('<option value="'+i+'">'+ret[i]+'</option>');
+			}
+        })
+	})
+
+	/*
+	for (var i = 0; i < 5; i++){
+		$("#sel").append('<option value="'+i+'">'+i+'</option>');   
+	}*/
+}
+
+function fieldClose(){
+	document.getElementById("sel").style.display = "none";
+}
+
+function optionSelect(){
+	var val = $("#sel").find("option:selected").text();
+	document.getElementById("q").value = val;
+	fieldClose();
+}
+
+function searchSubmit(){
+	var text = document.getElementById("q").value;
+	if (text == "")
+		return false;
+	else
+		return true;
+}
+
+$(function(){
+    $("#q").bigAutocomplete({
+        width:543,
+        url:'/suggest',
+        callback:function(data){
+            //alert(data.title);    
+        }
+    });
+})
+</script>
+
+<link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" /> <!--href设置或获取目标 URL ，rel设置或获取对象和链接目的的关系，告诉浏览器将采用一个样式表的文件，type表示调用样式的文件类型是CSS-->
+
+</head>
+<body>   <!--网页需要做的所有事情的标记-->
+<canvas id="mycanvas" height="800px" width="1650px" style="border: 0px solid white"></canvas>
+<div style="width:530px;margin:100px auto;">
+<div class="search_box" >
+<span class="left l_bg"></span>
+<span class="right r_bg"></span>
+
+
+    <div class="search">
+    <form name="search_form" action = "/search" method = "POST" onSubmit="return searchSubmit()">
+	{% csrf_token %}
+	<!--
+        <div id="pt1" class="select">
+        <a id="s0">多样搜索</a>
+        <div style="display:none;" id="pt2" class="part"> 
+            <p>
+            <a id="s1">语音搜索</a>
+            <a id="s2">图片搜索</a>  
+            <!--
+            <a id="s3">矢量素材</a>
+            <a id="s4">图片素材</a>
+            <a id="s5">网页特效</a>
+            <a id="s6">字体素材</a>
+            <a id="s7">常用软件</a>
+            <a id="s8">图标素材</a>
+            <a id="s9">PNG图标</a>
+            <a id="s10">GIF图标</a>
+            <a id="s11">网页模板</a>
+            <a id="s12">QQ表情</a>    
+            
+            </p>
+        </div>
+        </div>--> 
+    <!--<input id="catid" name="catid" type="hidden" value="7">-->
+    <input id="q" class="enter" name = "content" onFocus="if(this.value=='…'){this.value='';}else{this.select();}" value=""><!-- oninput="checkField(value)" --> 
+    <input class="sb" name = "input" type="submit" value="">
+	<select id = "sel" name = "sel" style = "display: none; width: 400px; appearance:none; -moz-appearance:none; -webkit-appearance:none;" onchange = "optionSelect()">
+	</select>
+    </form>
+    </div>
+</div>
+</div>
+<br><br><br>
+<div style="text-align:center;clear:both">
+
+</div>
+
+<!--logo-->
+<div class="logo">
+<div id="lg">
+<img hidefocus="true" src="{% static 'images/doogle6.jpg' %}" ><!--width="270" height="129"-->
+</div>
+</div>
+
+
+<!--搜狗中多种应用模式-->
+<div class="header">
+        <div class="top-nav">
+
+         <style type="text/css">
+       ul{float:left; width:529px;height:auto;/*border:1px solid #000;*/ }
+       li{float:left;margin-right:14px;/*border:1px solid #000;*/}
+       a:link{ color:#fff/*颜色自定义*/;} /* 未访问的链接 */ 
+       a:visited{color:#EFEFEF/*颜色自定义*/} /* 已访问的链接 */ 
+       a:hover{ color:#0f0/*颜色自定义*/}/* 鼠标在链接上 */ 
+       a:active{ color:#00AA00/*颜色自定义*/}/* 点击激活链接 */ 
+
+      
+     </style>
+    <ul>
+	
+        <!--<li><a onclick="st(this,'40030300','news')"href="http://news.sogou.com" uigs-id="nav_news" id="news">新闻</a></li>-->
+        <!--<li class="cur"><span>网页</span></li>-->
+        <!--<li><a onclick="st(this,'73141200','weixin')" href="http://weixin.sogou.com/" uigs-id="nav_weixin" id="weixinch">微信</a></li>-->
+        <!--<li><a onclick="st(this,'40051200','zhihu')" href="http://zhihu.sogou.com/" uigs-id="nav_zhihu" id="zhihu">知乎</a></li>-->
+        <!--<li><a onclick="st(this,'40030500','pic')" href="http://pic.sogou.com" uigs-id="nav_pic" id="pic">图片</a></li>
+        <li><a onclick="st(this,'40030600','video')" href="http://v.sogou.com/" uigs-id="nav_v" id="video">视频</a></li>
+        <li><a href="http://mingyi.sogou.com?fr=common_index_nav" uigs-id="nav_mingyi" id="mingyi" onclick="st(this,'','myingyi')">明医</a></li>
+        <!--<li><a href="http://english.sogou.com?fr=common_index_nav" uigs-id="nav_overseas" id="overseas" onclick="st(this,'','overseas')">英文</a></li>-->
+        <!--<li><a onclick="st(this,'web2ww','wenwen')" href="http://wenwen.sogou.com/?ch=websearch" uigs-id="nav_wenwen" id="index_more_wenwen">问问</a></li>
+        <li><a href="http://scholar.sogou.com?fr=common_index_nav" uigs-id="nav_scholar" id="scholar" onclick="st(this,'','scholar')">学术</a></li>
+		<!--
+        <li class="show-more">
+            <a href="javascript:void(0);" id="more-product" class="">更多<i class="m-arr"></i></a>
+            <div class="pos-more" id="products-box" style="display: none; top: 40px; opacity: 0;">
+                <span class="ico-san"></span>
+                <a onclick="st(this,'40031000')" href="http://map.sogou.com" uigs-id="nav_map" id="map">地图</a>
+                <a onclick="st(this,'40031500')" href="http://gouwu.sogou.com/" uigs-id="nav_gouwu" id="index_more_gouwu">购物</a>
+                <a onclick="st(this,'40051203')" href="http://baike.sogou.com/Home.v" uigs-id="nav_baike" id="index_more_baike">百科</a>
+                <a onclick="st(this)" href="http://zhishi.sogou.com" uigs-id="nav_zhishi" id="index_more_zhishi">知识</a>
+                <a onclick="st(this,'40051205')" href="http://as.sogou.com/" uigs-id="nav_app" id="index_more_appli">应用</a>
+                <a onclick="st(this,'40051205','fanyi')" href="http://fanyi.sogou.com?fr=common_index_nav_pc" uigs-id="nav_fanyi" id="index_more_fanyi">翻译</a>
+                <a href="http://index.sogou.com" uigs-id="nav_index" id="index_more_index">指数</a>
+                <span class="all"><a onclick="st(this,'40051206')" href="http://www.sogou.com/docs/more.htm?v=1" uigs-id="nav_all" target="_blank">全部</a></span>				
+            </div>
+        </li>-->
+	
+    </ul>
+		</div>
+</div>   
+<div style="text-align:center;clear:both; position: fixed; bottom: 28%; left: 37.5%;">
+
+<p style = "font-size:20px; font-weight: bold;">实时热点
+<img src = "{% static 'images/fresh1.png' %}" alt = "刷新一批" title = "刷新一批" onclick = "dofresh()" />
+</p>
+<br/>
+<div id = "show">
+	{% for key, value in newsDict.items %}
+	<p>
+	<a href = {{ value }}>{{ key }} </a>
+	</p>
+	{% endfor %}
+</div>
+</div>
+<div style="text-align:right;clear:both;position:fixed;bottom:50px;right:50px;">
+<!--<p> result: <span id = "result" > </span></p>-->
+
+<img src = "{% static 'images/fire.png' %}" alt = "换一副图片吧" title = "换一幅图片吧" onclick = "update('img')" />
+<img src = "{% static 'images/snow.png' %}" alt = "下雪啦" title = "下雪啦" name = "start" id = "snowid" onclick = "snow()" />
+<!--<input type = "button" value="改变背景图片" onclick="update('img')">
+<input type = "button" value="start" name = "snowid" id = "snowid" onclick="snow()" /> -->
+<audio src="" id="myaudio" loop = "loop" hidden="true">
+</audio>
+<img src = "{% static 'images/bells.png' %}" alt = "听，那新年的钟声" title = "听，那新年的钟声" name = "sound" id = "musicid" onclick = "music()" />
+<!--<input type = "button" value = "music" name = "musicid" id = "musicid" onclick = "music()" />-->
+<br/>
+
+</div>
+
+<!--左上角布局结束-->
+
+</body>
+</html>
